@@ -5,7 +5,6 @@ import { getToken, removeUserSession } from './Utils/Common';
 import Table from './Components/Table';
 import LogoutBtn from './Components/LogoutBtn'
 
-
 class Customers extends React.Component {
   constructor(props) {
     super(props);
@@ -29,7 +28,7 @@ class Customers extends React.Component {
     }
 
     this.removeBtn = i =>{
-      alert("Huj");
+      alert("nieko");
     }
   }
 

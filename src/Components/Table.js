@@ -2,8 +2,9 @@ import React from 'react';
 
 const Table = (customers) => {
 
-  const removeBtn = i =>{
-    customers.customers.splice(i);
+  const removeBtn = (i, index) =>{
+    customers.customers.splice(index,1);
+    i.name= 'aaaaaaaaaa'; 
   }
 
   return (
@@ -13,14 +14,14 @@ const Table = (customers) => {
           <th></th>
           <th>Name</th>
           <th>Address</th>
-          <th>Representatives </th>
+          <th>Representatives</th>
         </tr>
       </thead>
       <tbody>
         {customers.customers.map((customer, index) => {
           return (
             <tr key={index}>
-              <td><button onClick = {removeBtn(index)}><i class="fa fa-trash"></i></button></td>
+              <td><button onClick = {i=>removeBtn(i, index)}><i class="fa fa-trash"></i></button></td>
               <td>{customer.name}</td>
               <td>{customer.address}</td>
               <td>
