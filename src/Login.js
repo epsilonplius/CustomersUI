@@ -36,7 +36,7 @@ function Login(props) {
                 <input className="w3-input" type="password" {...password} autoComplete="new-password" />
 
                 {error && <><small style={{ color: 'red' }}>{error}</small></>}
-                <button className="w3-btn w3-blue" onClick={handleLogin} disabled={loading} >{loading ? 'Loading...' : 'Login'}</button>
+                <button className="w3-btn w3-blue w3-margin" onClick={handleLogin} disabled={loading} >{loading ? 'Loading...' : 'Login'}</button>
             </div>
 
         </div>

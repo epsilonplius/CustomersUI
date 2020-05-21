@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -8,6 +9,7 @@ import {
 } from "react-router-dom";
 import Login from './Login';
 import Customers from './Customers';
+import SimpleTable from './Components/SimpleTable';
 import PrivateRoute from './Utils/PrivateRoute';
 import PublicRoute from './Utils/PublicRoute';
 
