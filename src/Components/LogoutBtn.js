@@ -10,7 +10,7 @@ function LogoutBtn(props) {
     };
 
     return (
-        <button className="w3-btn w3-red" onClick={handleLogout}><i class="fa fa-sign-out"></i></button>
+        <button className="w3-btn w3-red" onClick={handleLogout}><i className="fa fa-sign-out"></i></button>
     )
 }
 

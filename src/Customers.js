@@ -3,49 +3,61 @@ import axios from 'axios';
 import { getToken } from './Utils/Common';
 import LogoutBtn from './Components/LogoutBtn'
 import MaterialTable from "material-table";
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import Avatar from '@material-ui/core/Avatar';
 
 class Customers extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      customers: []
+      customers: [],
+      showErrorMessage: true,
+      errorMessage: ""
     };
 
-    this.saveCustomer = customer => {
-      console.log(JSON.stringify(customer));
+    this.baseApiUrl = 'http://localhost:5000/api/Customers';
+
+    this.handleClose = (event, reason) => {
+      this.setState({ 'showErrorMessage': false })
+    };
+
+    this.deleteCustomer = customer => {
       const token = getToken();
       const config = {
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
+        }
+      }
+      axios.delete(this.baseApiUrl + '/' + customer.id, config)
+        .then()
+        .catch(function (error) {
+          
+        })
+        ;
+    }
+
+    this.saveCustomer = customer => {
+      const token = getToken();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         }
       }
       if (customer.id === undefined) {
-        axios.post('http://localhost:5000/api/Customers',customer , config)
+        axios.post(this.baseApiUrl, customer, config)
           .then();
       } else {
-        axios.put('http://localhost:5000/api/Customers/' + customer.id,customer , config)
+        axios.put(this.baseApiUrl + '/' + customer.id, customer, config)
           .then();
       }
     }
   }
 
-  getData = (page, pageSize) => {
-    page = page === undefined? 1 : page;
-    pageSize = pageSize === undefined? 10 : pageSize;
-    const token = getToken();
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    }
-    axios.get('http://localhost:5000/api/Customers?Page='+ page + '&PageSize='+pageSize, config)
-      .then(customers => this.setState({ 'customers': customers.data.items }))
-  }
-
-
   componentDidMount() {
-    // this.getData();
-    // setInterval(this.getData, 5000);
   }
 
   render() {
@@ -55,6 +67,9 @@ class Customers extends React.Component {
           <LogoutBtn></LogoutBtn>
         </div>
         <div className="w3-container">
+          <Snackbar open={this.state.showErrorMessage} autoHideDuration={6000} onClose={this.handleClose}>
+            <Alert severity="error" onClose={() => { }}>This is an error alert — check it out!</Alert>
+          </Snackbar>
           <div style={{ maxWidth: "100%" }}>
             <MaterialTable
               columns={[
@@ -67,18 +82,18 @@ class Customers extends React.Component {
                   const config = {
                     headers: { Authorization: `Bearer ${token}` }
                   }
-                  axios.get('http://localhost:5000/api/Customers?Page='+ (query.page+1) + '&PageSize='+ query.pageSize, config)
+                  axios.get(this.baseApiUrl + '?Page=' + (query.page + 1) + '&PageSize=' + query.pageSize, config)
                     .then(result => {
                       this.setState({ 'customers': result.data.items });
                       resolve({
                         data: result.data.items,
-                        page: result.data.page-1,
+                        page: result.data.page - 1,
                         pageSize: result.data.pageSize,
                         totalCount: result.data.total
-                    });
+                      });
                     })
                 })
-            }
+              }
               title="Customers"
               actions={[
                 {
@@ -95,12 +110,14 @@ class Customers extends React.Component {
                       search: false
                     }}
                     columns={[
+                      { title: "", field: "avatar", editable: 'never',render: rowData => <Avatar>{rowData.firstName.charAt(0).toUpperCase()}{rowData.lastName.charAt(0).toUpperCase()}</Avatar> },
                       { title: "First Name", field: "firstName" },
                       { title: "Last Name", field: "lastName" },
                       { title: "Job Title", field: "jobTitle" }
                     ]}
                     data={rowData.representatives}
                     editable={{
+                      isEditable: rowData => rowData.name !== "avatar",
                       onRowAdd: newData =>
                         new Promise((resolve, reject) => {
                           setTimeout(() => {
@@ -171,6 +188,7 @@ class Customers extends React.Component {
                       {
                         let data = this.state.customers;
                         const index = data.indexOf(oldData);
+                        this.deleteCustomer(this.state.customers[index]);
                         data.splice(index, 1);
                         this.setState({ 'customers': data }, () => resolve());
                       }
@@ -179,7 +197,10 @@ class Customers extends React.Component {
                   })
               }}
               options={{
-                filtering: false
+                filtering: false,
+                paginationType: 'stepped',
+                pageSizeOptions: [10, 20, 50],
+                pageSize: 10
               }}
             />
           </div>
