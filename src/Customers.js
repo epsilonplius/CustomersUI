@@ -1,10 +1,9 @@
 import React, { useState, Component } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { getToken } from './Utils/Common';
 import LogoutBtn from './Components/LogoutBtn'
 import MaterialTable from "material-table";
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
 import Avatar from '@material-ui/core/Avatar';
 
 class Customers extends React.Component {
@@ -12,9 +11,7 @@ class Customers extends React.Component {
     super(props);
 
     this.state = {
-      customers: [],
-      showErrorMessage: true,
-      errorMessage: ""
+      customers: []
     };
 
     this.baseApiUrl = 'http://localhost:5000/api/Customers';
@@ -33,9 +30,6 @@ class Customers extends React.Component {
       }
       axios.delete(this.baseApiUrl + '/' + customer.id, config)
         .then()
-        .catch(function (error) {
-          
-        })
         ;
     }
 
@@ -58,6 +52,15 @@ class Customers extends React.Component {
   }
 
   componentDidMount() {
+    console.log("I'm alive");
+    const token = getToken();
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    axios.get(this.baseApiUrl + '?Page=1&PageSize=10', config)
+      .then(result => {
+        this.setState({ 'customers': result.data.items });
+      })
   }
 
   render() {
@@ -67,9 +70,6 @@ class Customers extends React.Component {
           <LogoutBtn></LogoutBtn>
         </div>
         <div className="w3-container">
-          <Snackbar open={this.state.showErrorMessage} autoHideDuration={6000} onClose={this.handleClose}>
-            <Alert severity="error" onClose={() => { }}>This is an error alert — check it out!</Alert>
-          </Snackbar>
           <div style={{ maxWidth: "100%" }}>
             <MaterialTable
               columns={[

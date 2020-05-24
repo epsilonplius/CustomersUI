@@ -13,11 +13,11 @@ import PrivateRoute from './Utils/PrivateRoute';
 import PublicRoute from './Utils/PublicRoute';
 
 export default function App() {
-  return (    
+  return (
     <Router>
       <div>
         <Switch>
-          <PublicRoute path="/login" component={Login}></PublicRoute>
+          <PublicRoute path="/" component={Login}></PublicRoute>
           <PrivateRoute path="/customers" component={Customers} ></PrivateRoute>
         </Switch>
       </div>
